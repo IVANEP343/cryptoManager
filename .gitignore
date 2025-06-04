@@ -1,0 +1,22 @@
+﻿# Build output
+/bin/
+/obj/
+
+# Visual Studio files
+*.user
+*.suo
+*.vs/
+
+# NuGet packages
+*.nupkg
+packages/
+
+# Database files
+*.mdf
+*.ldb
+
+# Logs
+*.log
+
+# Visual Studio debugging settings
+launchSettings.json
