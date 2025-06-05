@@ -18,9 +18,13 @@ namespace CryptoManager.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTransaction([FromBody] CreateTransactionDto dto)
         {
-            // Verifica las reglas de ModelState (Required, Range, Min/MaxLength, fecha no futura)
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            // ✅  Verificar que el cliente exista antes de insertar
+            bool clientExists = await _context.Clients.AnyAsync(c => c.Id == dto.ClientId);
+            if (!clientExists)
+                return NotFound($"Client with Id {dto.ClientId} not found.");
 
             // Mapeo DTO -> entidad
             var tx = new Transaction
@@ -36,15 +40,32 @@ namespace CryptoManager.Controllers
             _context.Transactions.Add(tx);
             await _context.SaveChangesAsync();
 
-            // Mapeo entidad -> DTO de salida
             var result = new TransactionDto(
                 tx.Id, tx.CryptoCode, tx.Action,
                 tx.CryptoAmount, tx.Money, tx.DateTime, tx.ClientId
             );
 
-            // Devuelve 201 Created con el DTO resultante
             return CreatedAtAction(nameof(GetTransactionById), new { id = tx.Id }, result);
         }
+
+        // GET: api/Transaction/all
+        // Devuelve todas las transacciones sin filtrar (administrativo)
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllTransactions()
+        {
+            var list = await _context.Transactions
+                                     .AsNoTracking()
+                                     .OrderByDescending(t => t.DateTime)
+                                     .Select(t => new TransactionDto(
+                                         t.Id, t.CryptoCode, t.Action,
+                                         t.CryptoAmount, t.Money,
+                                         t.DateTime, t.ClientId))
+                                     .ToListAsync();
+
+            return Ok(list);
+        }
+
+
 
         // GET: api/Transaction/{id}
         // Devuelve una transacción en particular como TransactionDto
@@ -53,14 +74,17 @@ namespace CryptoManager.Controllers
         {
             var tx = await _context.Transactions
                                    .AsNoTracking()
+                                   .Where(t => t.Id == id)
                                    .Select(t => new TransactionDto(
                                        t.Id, t.CryptoCode, t.Action,
-                                       t.CryptoAmount, t.Money, t.DateTime, t.ClientId))
-                                   .FirstOrDefaultAsync(t => t.Id == id);
+                                       t.CryptoAmount, t.Money,
+                                       t.DateTime, t.ClientId))
+                                   .FirstOrDefaultAsync();
 
             if (tx == null) return NotFound();
             return Ok(tx);
         }
+
 
         // GET: api/Transaction?clientId=1
         // Devuelve todas las transacciones de un cliente, ordenadas por fecha descendente

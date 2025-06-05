@@ -2,12 +2,15 @@
 
 namespace CryptoManager.DTOs.Client
 {
-    // DTO utilizado para crear un cliente (entrada)
-    public record CreateClientDto(
-        [property: Required, MinLength(2), MaxLength(50, ErrorMessage = "Name max 50 chars")]
-        string Name,
+    /// <summary>
+    /// DTO de entrada para crear un cliente.
+    /// </summary>
+    public class CreateClientDto
+    {
+        [Required, MinLength(2), MaxLength(50)]
+        public string Name { get; init; } = string.Empty;
 
-        [property: Required, EmailAddress, MaxLength(100, ErrorMessage = "Email max 100 chars")]
-        string Email
-    );
+        [Required, EmailAddress, MaxLength(100)]
+        public string Email { get; init; } = string.Empty;
+    }
 }

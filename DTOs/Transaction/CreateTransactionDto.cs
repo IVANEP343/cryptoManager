@@ -3,24 +3,27 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CryptoManager.DTOs.Transaction
 {
-    // DTO utilizado para crear una transacción (entrada)
-    public record CreateTransactionDto(
-        [property: Required, MinLength(1), MaxLength(20)]
-        string CryptoCode,
+    /// <summary>
+    /// DTO de entrada para crear una transacción.
+    /// </summary>
+    public class CreateTransactionDto
+    {
+        [Required, MinLength(1), MaxLength(20)]
+        public string CryptoCode { get; init; } = string.Empty;
 
-        [property: Required, MaxLength(10)]
-        string Action, // "purchase" o "sale"
+        [Required, MaxLength(10)]
+        public string Action { get; init; } = string.Empty;          // "purchase" / "sale"
 
-        [property: Range(0.00000001, double.MaxValue)]
-        decimal CryptoAmount,
+        [Range(0.00000001, double.MaxValue)]
+        public decimal CryptoAmount { get; init; }
 
-        [property: Range(0.01, double.MaxValue)]
-        decimal Money,
+        [Range(0.01, double.MaxValue)]
+        public decimal Money { get; init; }
 
-        [property: Required]
-        DateTime DateTime,
+        [Required]
+        public DateTime DateTime { get; init; }
 
-        [property: Required]
-        int ClientId
-    );
+        [Required]
+        public int ClientId { get; init; }
+    }
 }
