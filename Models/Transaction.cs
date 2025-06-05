@@ -41,7 +41,8 @@ namespace CryptoManager.Models
         // Clave foránea hacia la entidad Client.
 
         [ForeignKey("ClientId")]
-        public Client Client { get; set; } = null!;
+        // agregamos ? para hacerlo nullable.
+        public Client? Client { get; set; } = null!;
         // Propiedad de navegación hacia Client. EF Core establece la relación muchos-a-uno.
 
         // Implementación de IValidatableObject: permite agregar validaciones personalizadas.
