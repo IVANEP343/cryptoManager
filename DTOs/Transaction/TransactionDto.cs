@@ -11,7 +11,7 @@ namespace CryptoManager.DTOs.Transaction
         public string CryptoCode { get; init; } = string.Empty;
         public string Action { get; init; } = string.Empty;
         public decimal CryptoAmount { get; init; }
-        public decimal Money { get; init; }
+        public decimal Money { get; init; } 
         public DateTime DateTime { get; init; }
         public int ClientId { get; init; }
 

@@ -17,8 +17,8 @@ namespace CryptoManager.DTOs.Transaction
         [Range(0.00000001, double.MaxValue)]
         public decimal CryptoAmount { get; init; }
 
-        [Range(0.01, double.MaxValue)]
-        public decimal Money { get; init; }
+        //[Range(0.01, double.MaxValue)]
+        //public decimal Money { get; init; } ahora lo calculare con criptomonedas
 
         [Required]
         public DateTime DateTime { get; init; }
