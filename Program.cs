@@ -1,11 +1,14 @@
 ﻿using CryptoManager.Data;
+using CryptoManager.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ──────────────────────────────────────────────────────────────
-// Añadir servicios al contenedor DI
-// ──────────────────────────────────────────────────────────────
+
+
+// Registrar HttpClient + CryptoPriceService
+builder.Services.AddHttpClient<ICryptoPriceService, CryptoPriceService>();
+
 
 // Controladores (API)
 builder.Services.AddControllers();
@@ -33,10 +36,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ──────────────────────────────────────────────────────────────
-// Configurar el pipeline HTTP
-// ──────────────────────────────────────────────────────────────
-
+// SWAGGER: habilitar en desarrollo
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

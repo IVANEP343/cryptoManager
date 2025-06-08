@@ -5,7 +5,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <header>
-    <h1 class="mainHeader">CRYPTO MANAGER ASSETS</h1>
+    <h1 class="mainHeader">CRYPTO ASSETS MANAGER </h1>
 
     <div class="navContainer">
       <nav>

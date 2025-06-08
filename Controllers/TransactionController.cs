@@ -3,6 +3,7 @@ using CryptoManager.DTOs.Transaction;   // Importa los DTO de transacción
 using CryptoManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CryptoManager.Services;
 
 namespace CryptoManager.Controllers
 {
@@ -11,8 +12,12 @@ namespace CryptoManager.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public TransactionController(AppDbContext context) => _context = context;
-
+        private readonly ICryptoPriceService _cryptoPriceService;
+        public TransactionController(AppDbContext context, ICryptoPriceService priceServ)
+        {
+            _context = context;
+            _cryptoPriceService = priceServ;
+        }
         // POST: api/Transaction
         // Crea una nueva transacción a partir del CreateTransactionDto
         [HttpPost]
@@ -21,10 +26,23 @@ namespace CryptoManager.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // ✅  Verificar que el cliente exista antes de insertar
+            //  Verificar que el cliente exista antes de insertar
             bool clientExists = await _context.Clients.AnyAsync(c => c.Id == dto.ClientId);
             if (!clientExists)
                 return NotFound($"Client with Id {dto.ClientId} not found.");
+
+            decimal unitPrice;
+            try
+            {
+                // Obtiene el precio de la criptomoneda en ARS
+                unitPrice = await _cryptoPriceService.GetPriceAsync("buenbit", dto.CryptoCode);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error fetching crypto price: {ex.Message}");
+            }
+            // Calcula el monto total en pesos
+            decimal totalMoney = dto.CryptoAmount * unitPrice;
 
             // Mapeo DTO -> entidad
             var tx = new Transaction
@@ -32,7 +50,7 @@ namespace CryptoManager.Controllers
                 CryptoCode = dto.CryptoCode,
                 Action = dto.Action,
                 CryptoAmount = dto.CryptoAmount,
-                Money = dto.Money,
+                Money = totalMoney, //calculado con api de CryptoYa, buenbit, ars
                 DateTime = dto.DateTime,
                 ClientId = dto.ClientId
             };
