@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CryptoManager.Validation;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace CryptoManager.DTOs.Transaction
@@ -21,6 +22,7 @@ namespace CryptoManager.DTOs.Transaction
         //public decimal Money { get; init; } ahora lo calculare con criptomonedas
 
         [Required]
+        [NotInFuture]
         public DateTime DateTime { get; init; }
 
         [Required]
