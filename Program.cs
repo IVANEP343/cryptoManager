@@ -1,42 +1,55 @@
-using CryptoManager.Data;
-using CryptoManager.Models;
+﻿using CryptoManager.Data;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-//Instalar Entity Framework Core y SQL Server desde el administrador de paquetes NuGet para que funcione correctamente.
+// ──────────────────────────────────────────────────────────────
+// Añadir servicios al contenedor DI
+// ──────────────────────────────────────────────────────────────
+
+// Controladores (API)
 builder.Services.AddControllers();
-builder.Services.AddControllers();
+
+// DbContext con SQL Server
+// Asegurate de tener instalado Microsoft.EntityFrameworkCore.SqlServer
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// CORS: permitir peticiones desde el frontend (puerto 5173)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173") // Ajustar si cambia el puerto
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
+// Swagger/OpenAPI (para desarrollo y pruebas)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-
-
-// Add services to the container.
-
-
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ──────────────────────────────────────────────────────────────
+// Configurar el pipeline HTTP
+// ──────────────────────────────────────────────────────────────
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Habilitar CORS según la política definida
+app.UseCors("AllowFrontend");
 
+app.UseHttpsRedirection();
 app.UseAuthorization();
 
+// Mapear rutas de los controladores
 app.MapControllers();
 
 app.Run();
