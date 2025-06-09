@@ -29,7 +29,7 @@ import { RouterLink, RouterView } from 'vue-router';
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: grey;
+  background-color: rgb(234, 233, 233);
 
 }
 

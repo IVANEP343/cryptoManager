@@ -1,6 +1,10 @@
 ﻿# Build output
-/bin/
-/obj/
+# Ignore build output directories
+/backend/bin/
+/backend/obj/
+/crypto-manager-frontend/node_modules/
+/crypto-manager-frontend/dist/
+
 
 # Visual Studio files
 *.user
