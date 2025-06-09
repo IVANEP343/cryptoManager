@@ -21,7 +21,6 @@ onMounted(async () => {
 
 const submitForm = async () => {
   try {
-    // Envía solo los campos del DTO: sin 'money'
     await createTransaction({
       cryptoCode:   form.value.cryptoCode,
       action:       form.value.action,
@@ -39,84 +38,131 @@ const submitForm = async () => {
       clientId:     null
     };
   } catch (err) {
-    // Muestra mensaje de error
-    message.value = err.response?.data?.title || 'Error saving';
+    message.value = err.response?.data?.title || 'Oops! Something went wrong.';
   }
 };
 </script>
 
 <template>
-  <h2 class="text-xl font-bold mb-4">New Purchase</h2>
+  <div class="purchase-form">
+    <h2 class="form-title">New Purchase</h2>
 
-  <div class="mb-2">
-    <label class="block">Client</label>
-    <select v-model="form.clientId" class="border p-1 w-full">
-      <option :value="null" disabled>Select client</option>
-      <option v-for="c in clients" :key="c.id" :value="c.id">
-        {{ c.name }}
-      </option>
-    </select>
+    <div class="form-group">
+      <label class="form-label">Client</label>
+      <select v-model="form.clientId" class="form-select">
+        <option :value="null" disabled>Select client</option>
+        <option v-for="c in clients" :key="c.id" :value="c.id">
+          {{ c.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Crypto</label>
+      <select v-model="form.cryptoCode" class="form-select">
+        <option disabled value="">Choose crypto</option>
+        <option value="BTC">Bitcoin</option>
+        <option value="ETH">Ethereum</option>
+        <option value="USDC">USDC</option>
+        <option value="SOL">Solana</option>
+        <option value="BNB">BNB</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Amount</label>
+      <input
+        v-model.number="form.cryptoAmount"
+        type="number"
+        step="0.00000001"
+        class="form-input"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Date & Time</label>
+      <input
+        v-model="form.dateTime"
+        type="datetime-local"
+        class="form-input"
+      />
+    </div>
+
+    <button @click="submitForm" class="btn-primary">
+      Save
+    </button>
+
+    <p v-if="message" class="form-message">{{ message }}</p>
   </div>
-
-  <div class="mb-2">
-    <label class="block">Crypto</label>
-    <select v-model="form.cryptoCode" class="border p-1 w-full">
-      <option disabled value="">Choose crypto</option>
-      <option value="BTC">Bitcoin</option>
-      <option value="ETH">Ethereum</option>
-      <option value="USDC">USDC</option>
-    </select>
-  </div>
-
-  <div class="mb-2">
-    <label class="block">Amount</label>
-    <input
-      v-model.number="form.cryptoAmount"
-      type="number"
-      step="0.00000001"
-      class="border p-1 w-full"
-    />
-  </div>
-
-  <div class="mb-4">
-    <label class="block">Date & Time</label>
-    <input
-      v-model="form.dateTime"
-      type="datetime-local"
-      class="border p-1 w-full"
-    />
-  </div>
-
-  <button
-    @click="submitForm"
-    class="bg-blue-600 text-white px-4 py-2 rounded"
-  >
-    Save
-  </button>
-
-  <p v-if="message" class="mt-2 text-green-600">{{ message }}</p>
 </template>
 
 <style scoped>
-button {
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
+.purchase-form {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fafafa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
   text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.form-select,
+.form-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.form-select:focus,
+.form-input:focus {
+  outline: none;
+  border-color: #888;
+  box-shadow: 0 0 0 2px rgba(136, 136, 136, 0.2);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-button:hover {
-  background-color: #45a049; /* Darker green */
+.btn-primary:hover {
+  background-color: #0056b3;
 }
 
-nav {
-  display: flex;
-  gap: 1rem;
+.form-message {
+  margin-top: 1rem;
+  text-align: center;
+  color: #006400;
+  font-weight: 500;
 }
 </style>

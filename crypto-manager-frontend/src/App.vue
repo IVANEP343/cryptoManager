@@ -1,52 +1,81 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router';
+
 
 </script>
 
 <template>
-  <header>
-    <h1 class="mainHeader">CRYPTO ASSETS MANAGER </h1>
-
-    <div class="navContainer">
-      <nav>
-        <button><RouterLink to="/new-purchase">new-purchase</RouterLink></button>
-        <button><RouterLink to="/History">MovementHistory</RouterLink></button>
+  <div class="app-container" >
+    <header class="app-header">
+      <h1 class="app-title">Crypto Assets Manager</h1>
+      <nav class="app-nav">
+        <RouterLink to="/new-purchase" class="nav-button" active-class="nav-button--active">
+          New Purchase
+        </RouterLink>
+        <RouterLink to="/history" class="nav-button" active-class="nav-button--active">
+          Movement History
+        </RouterLink>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <RouterView />
+    <main class="app-main">
+      <RouterView />
+    </main>
+  </div>
 </template>
 
 <style scoped>
-button {
-  background-color: #4CAF50; /* Green */
-  border: none;
-  padding: 15px 32px;
-  text-align: center;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  text-decoration: none;
-}
-button:hover {
-  background-color: #45a049; /* Darker green */
-}
-.navContainer {
-  background-color: rgb(37, 54, 54);
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 20px;
+.app-container {
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-.mainHeader {
-  text-align: center;
-  color: black;
-  font-size: 2em;
-  margin-bottom: 20px;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: grey;
+
 }
 
+.app-header {
+  background-color: rgba(0, 123, 255, 0.8);
+  /* background-color: #007bff; */
+  padding: 1rem;
+  color: white;
+  text-align: center;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.app-nav {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.nav-button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #0056b3;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.nav-button:hover {
+  background-color: #004494;
+}
+
+.nav-button--active {
+  background-color: #004080;
+}
+
+.app-main {
+  flex: 1;
+  padding: 2rem 1rem;
+  /* background: #f5f5f5; */
+  background: transparent;
+}
 </style>
